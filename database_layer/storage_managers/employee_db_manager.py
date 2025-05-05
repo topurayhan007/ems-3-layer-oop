@@ -42,7 +42,7 @@ class EmployeeDBManager:
             cursor.execute(query)
             result = cursor.fetchall()
             employees = self.db_data_to_employee_list(result)
-
+            
             cursor.close()
             db_connection.close()
             return employees
