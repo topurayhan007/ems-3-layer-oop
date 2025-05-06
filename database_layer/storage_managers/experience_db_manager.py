@@ -1,3 +1,4 @@
+import mysql.connector
 from application_layer.classes.experience import Experience
 from database_layer.db_setup import DatabaseManager
 class ExperienceDBManager:
@@ -24,8 +25,8 @@ class ExperienceDBManager:
             db_connection.close()
             return degree_id
         
-        except db_connection.Error as err:
-            print(err.msg)
+        except mysql.connector.Error as err:
+            print("error:", err.msg)
             cursor.close()
             db_connection.close()
             return None
@@ -48,8 +49,8 @@ class ExperienceDBManager:
             db_connection.close()
             return experiences
         
-        except db_connection.Error as err:
-            print(err.msg)
+        except mysql.connector.Error as err:
+            print("error:", err.msg)
             cursor.close()
             db_connection.close()
             return None
@@ -71,8 +72,8 @@ class ExperienceDBManager:
             db_connection.close()
             return result
         
-        except db_connection.Error as err:
-            print(err.msg)
+        except mysql.connector.Error as err:
+            print("error:", err.msg)
             cursor.close()
             db_connection.close()
             return None
@@ -103,8 +104,8 @@ class ExperienceDBManager:
             db_connection.close()
             return result
         
-        except db_connection.Error as err:
-            print(err.msg)
+        except mysql.connector.Error as err:
+            print("error:", err.msg)
             cursor.close()
             db_connection.close()
             return None

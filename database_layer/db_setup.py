@@ -94,7 +94,7 @@ class DatabaseManager:
                     if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
                         print("already exists.")
                     else:
-                        print(err.msg)
+                        print("error:", err.msg)
 
             cursor.close()
 

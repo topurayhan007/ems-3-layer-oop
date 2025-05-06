@@ -5,6 +5,15 @@ from presentation_layer.cli_controllers.education_cli_controller import Educatio
 from presentation_layer.cli_controllers.experience_cli_controller import ExperienceCliController
 from application_layer.services.employee_service import EmployeeService
 from presentation_layer.table_printer import Printer
+import requests
+import http.client
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+BASE_URL = os.getenv("BASE_URL")
+# conn = http.client.HTTPConnection("localhost", 8080)
+# conn.request("GET", "/api/employees")
 
 class EmployeeCliController:
     def __init__(self, employee_service:EmployeeService, education_cli_controller: EducationCliController, experience_cli_controller: ExperienceCliController):
@@ -36,6 +45,8 @@ class EmployeeCliController:
         
         # Send to employee service to add employee
         _employee_id = self.employee_service.add_employee(employee)
+        # _employee_id = requests.post(f"{BASE_URL}/api/employees", employee)
+
         if _employee_id is not None:
             print(f"✅ Employee with ID: {_employee_id} added successfully")
             no_of_degrees = int(input("How many educational degress do you want to add? => "))
@@ -52,8 +63,11 @@ class EmployeeCliController:
             
 
     def getAllEmployees(self):
-        # Get employees from employee service
+        # Get employees from API
         employees = self.employee_service.get_all_employee()
+        # results = requests.get(f"{BASE_URL}/api/employees")
+        # print(results.json()['employees'])
+        # employees = results.json()['employees']
         if employees is None or len(employees) == 0:
             print("⚠️  No data found!")
             return None

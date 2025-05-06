@@ -1,4 +1,5 @@
 # Database Class with queries, methods to perform queries to DB, retrieve data to class object
+import mysql.connector
 from application_layer.classes.employee import Employee
 from database_layer.db_setup import DatabaseManager
 
@@ -24,8 +25,8 @@ class EmployeeDBManager:
             db_connection.close()
             return emp_id
         
-        except db_connection.Error as err:
-            print(err.msg)
+        except mysql.connector.Error as err:
+            print("error:", err.msg)
             cursor.close()
             db_connection.close()
             return None
@@ -47,8 +48,8 @@ class EmployeeDBManager:
             db_connection.close()
             return employees
         
-        except db_connection.Error as err:
-            print(err.msg)
+        except mysql.connector.Error as err:
+            print("error:", err.msg)
             cursor.close()
             db_connection.close()
             return None
@@ -86,8 +87,8 @@ class EmployeeDBManager:
             db_connection.close()
             return employees
         
-        except db_connection.Error as err:
-            print(err.msg)
+        except mysql.connector.Error as err:
+            print("error:", err.msg)
             cursor.close()
             db_connection.close()
             return None
@@ -108,8 +109,8 @@ class EmployeeDBManager:
             db_connection.close()
             return result
         
-        except db_connection.Error as err:
-            print(err.msg)
+        except mysql.connector.Error as err:
+            print("error:", err.msg)
             cursor.close()
             db_connection.close()
             return None
@@ -149,8 +150,8 @@ class EmployeeDBManager:
             db_connection.close()
             return result
         
-        except db_connection.Error as err:
-            print(err.msg)
+        except mysql.connector.Error as err:
+            print("error:", err.msg)
             cursor.close()
             db_connection.close()
             return None
