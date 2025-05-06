@@ -198,7 +198,7 @@ class EmployeeDBManager:
             employee = Employee(
                 row['employee_id'],
                 row['name'],
-                row['date_of_birth'],
+                row['date_of_birth'].strftime("%d-%m-%Y"),
                 row['nid'],
                 row['email'],
                 row['phone_no'],
@@ -209,7 +209,7 @@ class EmployeeDBManager:
                 row['dept'],
                 row['designation'],
                 row['nationality'],
-                row['joining_date'],
+                row['joining_date'].strftime("%d-%m-%Y"),
                 row['present_address'],
                 row['permanent_address']
             )
