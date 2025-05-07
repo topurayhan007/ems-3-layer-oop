@@ -60,8 +60,8 @@ class EmployeeCliController:
     def getAllEmployees(self):
         # Get employees from API
         # employees = self.employee_service.get_all_employee()
-        results = self.requester.request("GET", "/api/employees")
-        json_data = results['employees']
+        response = self.requester.request("GET", "/api/employees")
+        json_data = response['employees']
         employees = self.__json_to_employee_obj(json_data)
 
         if employees is None or len(employees) == 0:
