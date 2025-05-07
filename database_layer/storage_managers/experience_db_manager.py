@@ -137,8 +137,8 @@ class ExperienceDBManager:
                 row['employee_id'],
                 row['company_name'],
                 row['position'],
-                row['joining_date'],
-                row['ending_date'],
+                row['joining_date'].strftime("%d-%m-%Y"),
+                row['ending_date'].strftime("%d-%m-%Y"),
                 row['location']
             )
             experiences.append(experience)

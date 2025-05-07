@@ -3,7 +3,6 @@ from application_layer.services.input_validator_service import InputValidator
 from application_layer.services.education_service import EducationService
 from presentation_layer.table_printer import Printer
 from api.request import Request
-from datetime import datetime
 
 class EducationCliController:
     def __init__(self, education_service: EducationService):

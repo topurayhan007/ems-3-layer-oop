@@ -127,8 +127,15 @@ class EmployeeCliController:
             else:
                 print("⚠️  You entered an invalid field, skipping this field...")
         
-        employee._date_of_birth = datetime.strptime(employee._date_of_birth, "%d-%m-%Y").strftime("%Y-%m-%d")
-        employee._joining_date = datetime.strptime(employee._joining_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+        try:
+            datetime.strptime(employee._date_of_birth, "%Y-%m-%d")
+        except ValueError:
+            employee._date_of_birth = datetime.strptime(employee._date_of_birth, "%d-%m-%Y").strftime("%Y-%m-%d")
+
+        try:
+            datetime.strptime(employee._joining_date, "%Y-%m-%d")
+        except ValueError:
+            employee._joining_date = datetime.strptime(employee._joining_date, "%d-%m-%Y").strftime("%Y-%m-%d")
 
         # self.employee_service.update_an_employee(item)
         response = self.requester.request("PUT", "/api/employees", employee)

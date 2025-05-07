@@ -2,12 +2,15 @@ from application_layer.classes.experience import Experience
 from application_layer.services.experience_service import ExperienceService
 from application_layer.services.input_validator_service import InputValidator
 from presentation_layer.table_printer import Printer
+from api.request import Request
+from datetime import datetime
 
 class ExperienceCliController:
     def __init__(self, experience_service: ExperienceService):
         self.validator = InputValidator()
         self.printer = Printer()
         self.experience_service = experience_service
+        self.requester = Request()
 
     def add_experience(self, _employee_id):
         _company_name = self.validator.get_input_and_validate(str, "Enter company's name: ")
@@ -18,15 +21,21 @@ class ExperienceCliController:
     
         experience = Experience(None, _employee_id, _company_name, _position, _joining_date, _ending_date, _location)
 
-        experience_id = self.experience_service.add_experience(experience)
+        # experience_id = self.experience_service.add_experience(experience)
+        response = self.requester.request("POST", "/api/experiences", experience)
+        experience_id = response["result"]
 
         if experience_id is not None:
-            print("✅ Experience saved into database!")
+            print(f"✅ Experience with ID: {experience_id} saved into database!")
         else:
-            print("⚠️  Something went wrong!")        
+            print("⚠️  Couldn't add to database!")        
 
     def search_experience(self, employee_id):
-        experiences = self.experience_service.search_experiences_of_an_employee(employee_id)
+        # experiences = self.experience_service.search_experiences_of_an_employee(employee_id)
+        response = self.requester.request("GET", f"/api/experiences/{employee_id}")
+        json_data = response["experiences"]
+        experiences = self.__json_to_experience_obj(json_data)
+
         if experiences is None or len(experiences) == 0:
             print("⚠️  No experiences found for the employee!")
             return None
@@ -35,7 +44,9 @@ class ExperienceCliController:
             return experiences
 
     def delete_experience(self, experience_id):
-        result = self.experience_service.delete_an_experience_of_an_employee(experience_id)
+        # result = self.experience_service.delete_an_experience_of_an_employee(experience_id)
+        response = self.requester.request("DELETE", f"/api/experiences/{experience_id}")
+        result = response["result"]
         if result == 1:
             print("✅ Experience deleted from database!")
         else:
@@ -64,8 +75,20 @@ class ExperienceCliController:
                  item._location = self.validator.get_input_and_validate(str, "Enter new company's location: ")
             else:
                 print("⚠️  You entered an invalid field, skipping this field...")
+            
+        try:
+            datetime.strptime(item._joining_date, "%Y-%m-%d")
+        except ValueError:
+            item._joining_date = datetime.strptime(item._joining_date, "%d-%m-%Y").strftime("%Y-%m-%d")
 
-        result = self.experience_service.update_an_experience_of_an_employee(item)
+        try:
+            datetime.strptime(item._joining_date, "%Y-%m-%d")
+        except ValueError:
+            item._ending_date = datetime.strptime(item._ending_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+
+        # result = self.experience_service.update_an_experience_of_an_employee(item)
+        response = self.requester.request("PUT", "/api/experiences", item)
+        result = response["result"]
         
         if result == 1:
             print("✅ Experience updated successfully!") 
@@ -77,6 +100,22 @@ class ExperienceCliController:
         for item in experiences:
             if  item._experience_id == experience_id:
                 self.update_experience_fields_and_put_into_db(item)
+
+    
+    def __json_to_experience_obj(self, data) -> list[Experience]:
+        experiences: list[Experience] = []
+        for row in data:
+            experience = Experience(
+                row['_experience_id'],
+                row['_employee_id'],
+                row['_company_name'],
+                row['_position'],
+                row['_joining_date'],
+                row['_ending_date'],
+                row['_location']
+            )
+            experiences.append(experience)
+        return experiences
 
 
         
