@@ -2,7 +2,7 @@
 import http.client
 import json
 
-class Request():
+class Requester():
     @staticmethod
     def request(http_method, end_point, body=None):
         headers = {"Content-type": "application/json"}

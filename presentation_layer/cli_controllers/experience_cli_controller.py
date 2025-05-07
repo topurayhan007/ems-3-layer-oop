@@ -2,7 +2,7 @@ from application_layer.classes.experience import Experience
 from application_layer.services.experience_service import ExperienceService
 from application_layer.services.input_validator_service import InputValidator
 from presentation_layer.table_printer import Printer
-from api.request import Request
+from api.requester import Requester
 from datetime import datetime
 
 class ExperienceCliController:
@@ -10,7 +10,7 @@ class ExperienceCliController:
         self.validator = InputValidator()
         self.printer = Printer()
         self.experience_service = experience_service
-        self.requester = Request()
+        self.requester = Requester()
 
     def add_experience(self, _employee_id):
         _company_name = self.validator.get_input_and_validate(str, "Enter company's name: ")

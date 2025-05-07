@@ -2,14 +2,14 @@ from application_layer.classes.education import EducationalDegree
 from application_layer.services.input_validator_service import InputValidator
 from application_layer.services.education_service import EducationService
 from presentation_layer.table_printer import Printer
-from api.request import Request
+from api.requester import Requester
 
 class EducationCliController:
     def __init__(self, education_service: EducationService):
         self.validator = InputValidator()
         self.printer = Printer()
         self.education_service = education_service
-        self.requester = Request()
+        self.requester = Requester()
 
     def add_educational_degree(self, _employee_id):
         _degree_name = self.validator.get_input_and_validate(str, "Enter educational degree name: ")

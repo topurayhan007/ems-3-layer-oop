@@ -5,7 +5,7 @@ from presentation_layer.cli_controllers.education_cli_controller import Educatio
 from presentation_layer.cli_controllers.experience_cli_controller import ExperienceCliController
 from application_layer.services.employee_service import EmployeeService
 from presentation_layer.table_printer import Printer
-from api.request import Request
+from api.requester import Requester
 from datetime import datetime
 
 class EmployeeCliController:
@@ -15,7 +15,7 @@ class EmployeeCliController:
         self.experience_cli_controller = experience_cli_controller
         self.printer = Printer()
         self.employee_service = employee_service
-        self.requester = Request()
+        self.requester = Requester()
     
 
     def add_an_employee(self):
