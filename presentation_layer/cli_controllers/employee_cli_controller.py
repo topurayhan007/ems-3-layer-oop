@@ -6,15 +6,7 @@ from presentation_layer.cli_controllers.experience_cli_controller import Experie
 from application_layer.services.employee_service import EmployeeService
 from presentation_layer.table_printer import Printer
 from api.request import Request
-import requests
-import http.client
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-BASE_URL = os.getenv("BASE_URL")
-# conn = http.client.HTTPConnection("localhost", 8080)
-# conn.request("GET", "/api/employees")
+from datetime import datetime
 
 class EmployeeCliController:
     def __init__(self, employee_service:EmployeeService, education_cli_controller: EducationCliController, experience_cli_controller: ExperienceCliController):
@@ -80,7 +72,11 @@ class EmployeeCliController:
             return employees
     
     def searchAnEmployee(self, input_text):
-        search_result = self.employee_service.search_employee(input_text)
+        # search_result = self.employee_service.search_employee(input_text)
+        results = self.requester.request("GET", f"/api/employees?q={input_text}")
+        json_data = results['employees']
+        search_result = self.__json_to_employee_obj(json_data)
+        
         if search_result is None or len(search_result) == 0:
             print("⚠️  Employee not found!")
             return None
@@ -131,12 +127,25 @@ class EmployeeCliController:
             else:
                 print("⚠️  You entered an invalid field, skipping this field...")
         
-        self.employee_service.update_an_employee(item)
-        print("✅ Employee updated successfully!") 
+        employee._date_of_birth = datetime.strptime(employee._date_of_birth, "%d-%m-%Y").strftime("%Y-%m-%d")
+        employee._joining_date = datetime.strptime(employee._joining_date, "%d-%m-%Y").strftime("%Y-%m-%d")
+
+        # self.employee_service.update_an_employee(item)
+        response = self.requester.request("PUT", "/api/employees", employee)
+        result = response["result"]
+        if result == 1:
+            print("✅ Employee updated successfully!") 
+        else:
+            print("⚠️  Couldn't update employee!")
     
     def deleteAnEmployee(self, employee:Employee):
-        self.employee_service.delete_an_employee(employee._employee_id)
-        print("✅ Employee deleted successfully!") 
+        # self.employee_service.delete_an_employee(employee._employee_id)
+        response = self.requester.request("DELETE", f"/api/employees/{employee._employee_id}", employee)
+        result = response["result"]
+        if result == 1:
+            print("✅ Employee deleted successfully!") 
+        else:
+            print("⚠️  Couldn't delete employee!")
 
 
     def selectEmployeeAndPerformUpdateOrDelete(self, search_result: list[Employee], action):
