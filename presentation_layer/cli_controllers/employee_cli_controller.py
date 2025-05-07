@@ -5,6 +5,7 @@ from presentation_layer.cli_controllers.education_cli_controller import Educatio
 from presentation_layer.cli_controllers.experience_cli_controller import ExperienceCliController
 from application_layer.services.employee_service import EmployeeService
 from presentation_layer.table_printer import Printer
+from api.request import Request
 import requests
 import http.client
 import os
@@ -22,6 +23,7 @@ class EmployeeCliController:
         self.experience_cli_controller = experience_cli_controller
         self.printer = Printer()
         self.employee_service = employee_service
+        self.requester = Request()
     
 
     def add_an_employee(self):
@@ -44,8 +46,9 @@ class EmployeeCliController:
         employee = Employee(None, _name, _date_of_birth, _nid, _email, _phone_no, _gender, _father_name, _mother_name, _marital_status, _dept, _designation, _nationality, _joining_date, _present_address, _permanent_address)
         
         # Send to employee service to add employee
-        _employee_id = self.employee_service.add_employee(employee)
-        # _employee_id = requests.post(f"{BASE_URL}/api/employees", employee)
+        # _employee_id = self.employee_service.add_employee(employee)
+        response = self.requester.request("POST", "/api/employees", employee)
+        _employee_id = response["result"]
 
         if _employee_id is not None:
             print(f"✅ Employee with ID: {_employee_id} added successfully")
@@ -64,10 +67,11 @@ class EmployeeCliController:
 
     def getAllEmployees(self):
         # Get employees from API
-        employees = self.employee_service.get_all_employee()
-        # results = requests.get(f"{BASE_URL}/api/employees")
-        # print(results.json()['employees'])
-        # employees = results.json()['employees']
+        # employees = self.employee_service.get_all_employee()
+        results = self.requester.request("GET", "/api/employees")
+        json_data = results['employees']
+        employees = self.__json_to_employee_obj(json_data)
+
         if employees is None or len(employees) == 0:
             print("⚠️  No data found!")
             return None
@@ -155,4 +159,29 @@ class EmployeeCliController:
                 self.updateEmployeeFields(selected_emp) if action == "update" else self.deleteAnEmployee(selected_emp) 
             else:
                 self.updateEmployeeFields(search_result[0]) if action == "update" else self.deleteAnEmployee(search_result[0])
+
+    def __json_to_employee_obj(self, data) -> list[Employee]:
+        employees: list[Employee] = []
+        for row in data:
+            employee = Employee(
+                row['_employee_id'],
+                row['_name'],
+                row['_date_of_birth'],
+                row['_nid'],
+                row['_email'],
+                row['_phone_no'],
+                row['_gender'],
+                row['_father_name'],
+                row['_mother_name'],
+                row['_marital_status'],
+                row['_dept'],
+                row['_designation'],
+                row['_nationality'],
+                row['_joining_date'],
+                row['_present_address'],
+                row['_permanent_address']
+            )
+            employees.append(employee)
+        return employees
+    
       

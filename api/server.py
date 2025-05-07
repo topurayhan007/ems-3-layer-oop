@@ -66,7 +66,7 @@ class Server(BaseHTTPRequestHandler):
                 employee_id = self.path.split("degrees/")[1]
                 degrees = education_service.search_degrees_of_an_employee(employee_id)
                 degrees_dict = [edu.__dict__ for edu in degrees] if degrees else []
-                self.self._send_response(200, "OK", {"degrees": degrees_dict})
+                self._send_response(200, "OK", {"degrees": degrees_dict})
 
             # Experiences API
             # http://localhost:8000/api/experiences/{id}
@@ -74,7 +74,7 @@ class Server(BaseHTTPRequestHandler):
                 employee_id = self.path.split("experiences/")[1]
                 experiences = experience_service.search_experiences_of_an_employee(employee_id)
                 experiences_dict = [edu.__dict__ for edu in experiences] if experiences else []
-                self.self._send_response(200, "OK", {"experiences": experiences_dict})
+                self._send_response(200, "OK", {"experiences": experiences_dict})
                 
             else:
                 self._send_response(404, "Not Found", {"error": "Invalid route"})
